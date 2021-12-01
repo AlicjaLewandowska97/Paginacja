@@ -18,19 +18,39 @@ const App = () => {
         getItems()
     }, [itemsPerPage, currentPage])
 
-    const getItems = async () => {
+    const getItems =  () => {
         setLoading(true);
 
-        const response = await fetch(`https://reqres.in/api/users?page=${currentPage}&per-page=${itemsPerPage}`)
+          fetch(`https://reqres.in/api/users?page=${currentPage}&per-page=${itemsPerPage}`)
+          .then( response => response.json() )
+          .then( resJson => {
+              allItems.current = resJson.total;
+              allPages.current = allItems.current / itemsPerPage;
 
-        const responseJson = await  response.json()
+              setLoading(false);
+              setList(resJson.data)
+          })
 
-        console.log(responseJson);
+        
     }
 
     return (
         <>
+             <div className="container">
+                 <div className="row justify-content-center">
+                     <div className="col-lg-8">
+                         <h1 className="my-5">Lista użytkowników</h1>
+                         {list.map((item,index) => (
+                             <div key={index} className="card mb-5">
+                                 <div className="card-body">
+                                    <h2>{item.first_name}, {item.last_name}</h2>
 
+                                    </div>
+                                </div>
+                            ))}
+                     </div>
+                 </div>
+             </div>
         </>
     )
 }
